@@ -39,6 +39,7 @@ PACKAGES=(
 	git
 	curl
 	neovim
+	waybar
 	kitty
     swaync
     cava

@@ -101,6 +101,7 @@ PACMAN_PACKAGES=(
     starship
     hyprlock
     nautilus
+    libnotify
     pavucontrol
     swww
     zed

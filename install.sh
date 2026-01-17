@@ -7,12 +7,13 @@ set -e
 INSTALL_YAY=true
 
 AUR_PACKAGES=(
-    zed-bin
     waypaper
     google-chrome
+    wf-recorder
     catppuccin-gtk-theme-mocha
     fastfetch
     swaync
+    visual-studio-code-bin
 )
 
 # ==============================
@@ -95,11 +96,15 @@ PACMAN_PACKAGES=(
     cava
     zsh
     fish
+    grim
+    slurp
     starship
     hyprlock
     nautilus
     pavucontrol
     swww
+    zed
+    rust
     python-lsp-server
     pyright
     shfmt

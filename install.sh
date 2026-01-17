@@ -2,27 +2,26 @@
 set -e
 
 # ==============================
-# CONFIGURAÇÕES (EDITE AQUI)
+# CONFIGURAÇÕES
 # ==============================
-
-# Instalar yay e pacotes AUR?
 INSTALL_YAY=true
 
 AUR_PACKAGES=(
     zed-bin
     waypaper
+    google-chrome
     catppuccin-gtk-theme-mocha
+    fastfetch
     swaync
 )
 
 # ==============================
-# CHECKLIST DE INSTALAÇÃO
+# CHECKLIST
 # ==============================
 declare -A INSTALL_STATUS
 
 install_pacman_pkg() {
     local pkg="$1"
-
     if pacman -S --needed --noconfirm "$pkg"; then
         INSTALL_STATUS["$pkg"]="OK"
     else
@@ -32,7 +31,6 @@ install_pacman_pkg() {
 
 install_aur_pkg() {
     local pkg="$1"
-
     if sudo -u "$SUDO_USER" yay -S --needed --noconfirm "$pkg"; then
         INSTALL_STATUS["$pkg (AUR)"]="OK"
     else
@@ -44,13 +42,13 @@ install_aur_pkg() {
 # VERIFICAÇÕES
 # ==============================
 if [[ $EUID -ne 0 ]]; then
-    echo "Execute com sudo:"
+    echo "Use sudo:"
     echo "  sudo $0"
     exit 1
 fi
 
 if [[ -z "$SUDO_USER" ]]; then
-    echo "Este script deve ser executado via sudo por um usuário normal."
+    echo "Execute via sudo por um usuário normal."
     exit 1
 fi
 
@@ -58,28 +56,31 @@ USER_HOME=$(eval echo "~$SUDO_USER")
 USER_CONFIG="$USER_HOME/.config"
 USER_BIN="$USER_HOME/.local/bin"
 
-echo "Usuário alvo: $SUDO_USER"
-echo "Home: $USER_HOME"
+# ==============================
+# ESCOLHA DO SHELL
+# ==============================
+echo
+echo "🐚 Escolha o shell padrão"
+echo "1) Bash (padrão)"
+echo "2) Zsh"
+echo "3) Fish"
+read -rp "Digite [1-3]: " SHELL_CHOICE
+
+case "$SHELL_CHOICE" in
+    2) TARGET_SHELL="zsh" ;;
+    3) TARGET_SHELL="fish" ;;
+    *) TARGET_SHELL="bash" ;;
+esac
+
+echo "Shell escolhido: $TARGET_SHELL"
 
 # ==============================
 # COPIAR DOTFILES
 # ==============================
-echo "Copiando dotfiles..."
-
-if [[ ! -d "./.config" ]]; then
-    echo "Pasta '.config/' não encontrada na raiz do repositório!"
-    exit 1
-fi
-
 mkdir -p "$USER_CONFIG" "$USER_BIN"
-
-cp -rT ./.config "$USER_CONFIG"
-
-if [[ -d "./.local/bin" ]]; then
-    cp -rT ./.local/bin "$USER_BIN"
-    chmod +x "$USER_BIN"/* || true
-fi
-
+cp -rT ./.config "$USER_CONFIG" 2>/dev/null || true
+cp -rT ./.local/bin "$USER_BIN" 2>/dev/null || true
+chmod +x "$USER_BIN"/* 2>/dev/null || true
 chown -R "$SUDO_USER:$SUDO_USER" "$USER_CONFIG" "$USER_BIN"
 
 # ==============================
@@ -89,9 +90,12 @@ PACMAN_PACKAGES=(
     base-devel
     git
     curl
+    firefox
     waybar
     cava
     zsh
+    fish
+    starship
     hyprlock
     nautilus
     pavucontrol
@@ -105,23 +109,15 @@ PACMAN_PACKAGES=(
     rust-analyzer
     clang
     gopls
-    fastfetch
     nwg-look
     rofi
     ttf-jetbrains-mono
     ttf-jetbrains-mono-nerd
-    wf-recorder
-    wlogout
     kitty
-    wireless_tools
-    pamixer
     mpv
     imagemagick
 )
 
-# ==============================
-# ATUALIZAR SISTEMA
-# ==============================
 echo "Atualizando sistema..."
 pacman -Syu --noconfirm
 
@@ -133,48 +129,64 @@ done
 set -e
 
 # ==============================
-# DEFINIR ZSH COMO SHELL PADRÃO
+# DEFINIR SHELL PADRÃO
 # ==============================
-echo "Configurando ZSH como shell padrão..."
+set_user_shell() {
+    local shell="$1"
+    local path
+    path=$(command -v "$shell") || return
 
-ZSH_PATH=$(command -v zsh)
+    grep -qx "$path" /etc/shells || echo "$path" >> /etc/shells
+    chsh -s "$path" "$SUDO_USER"
+}
 
-if [[ -n "$ZSH_PATH" ]]; then
-    if ! grep -qx "$ZSH_PATH" /etc/shells; then
-        echo "$ZSH_PATH" >> /etc/shells
-    fi
-
-    chsh -s "$ZSH_PATH" "$SUDO_USER"
-    echo "ZSH definido como shell padrão para $SUDO_USER"
-else
-    echo "❌ ZSH não encontrado, pulando configuração."
+if [[ "$TARGET_SHELL" != "bash" ]]; then
+    set_user_shell "$TARGET_SHELL"
 fi
 
 # ==============================
-# INSTALAR YAY (OPCIONAL)
+# CONFIGURAR STARSHIP
 # ==============================
-if [[ "$INSTALL_YAY" == true ]]; then
-    if ! command -v yay &> /dev/null; then
-        echo "Instalando yay (AUR helper)..."
-        sudo -u "$SUDO_USER" bash << EOF
-set -e
+echo "Configurando Starship..."
+
+if [[ "$TARGET_SHELL" == "bash" ]]; then
+    BASHRC="$USER_HOME/.bashrc"
+    grep -q "starship init bash" "$BASHRC" 2>/dev/null || \
+        echo 'eval "$(starship init bash)"' >> "$BASHRC"
+
+elif [[ "$TARGET_SHELL" == "zsh" ]]; then
+    ZSHRC="$USER_HOME/.zshrc"
+    grep -q "starship init zsh" "$ZSHRC" 2>/dev/null || \
+        echo 'eval "$(starship init zsh)"' >> "$ZSHRC"
+
+elif [[ "$TARGET_SHELL" == "fish" ]]; then
+    FISHCFG="$USER_HOME/.config/fish/config.fish"
+    mkdir -p "$(dirname "$FISHCFG")"
+    grep -q "starship init fish" "$FISHCFG" 2>/dev/null || \
+        echo 'starship init fish | source' >> "$FISHCFG"
+fi
+
+chown "$SUDO_USER:$SUDO_USER" \
+    "$USER_HOME/.bashrc" \
+    "$USER_HOME/.zshrc" \
+    "$USER_HOME/.config/fish/config.fish" 2>/dev/null || true
+
+# ==============================
+# INSTALAR YAY
+# ==============================
+if [[ "$INSTALL_YAY" == true && ! $(command -v yay) ]]; then
+    sudo -u "$SUDO_USER" bash <<EOF
 cd /tmp
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si --noconfirm
 EOF
-    else
-        echo "yay já está instalado."
-    fi
-else
-    echo "Instalação de AUR desativada."
 fi
 
 # ==============================
-# INSTALAR PACOTES AUR
+# INSTALAR AUR
 # ==============================
-if [[ "$INSTALL_YAY" == true && ${#AUR_PACKAGES[@]} -gt 0 ]]; then
-    echo "Instalando pacotes AUR..."
+if [[ "$INSTALL_YAY" == true ]]; then
     set +e
     for pkg in "${AUR_PACKAGES[@]}"; do
         install_aur_pkg "$pkg"
@@ -186,18 +198,11 @@ fi
 # CHECKLIST FINAL
 # ==============================
 echo
-echo "=============================="
 echo "📦 CHECKLIST DE INSTALAÇÃO"
-echo "=============================="
-
 for pkg in "${!INSTALL_STATUS[@]}"; do
-    if [[ "${INSTALL_STATUS[$pkg]}" == "OK" ]]; then
-        echo "✔ $pkg"
-    else
-        echo "✖ $pkg"
-    fi
+    [[ "${INSTALL_STATUS[$pkg]}" == "OK" ]] && echo "✔ $pkg" || echo "✖ $pkg"
 done
 
 echo
-echo "ℹ️ Faça logout/login para o ZSH entrar em efeito."
-echo "✅ Script finalizado."
+echo "ℹ️ Faça logout/login para aplicar o shell e o Starship."
+echo "✅ Script finalizado com sucesso."

@@ -23,7 +23,7 @@ echo "Usuário alvo: $SUDO_USER"
 echo "Home: $USER_HOME"
 
 # ==============================
-# COPIAR CONFIGURAÇÕES
+# COPIAR DOTFILES
 # ==============================
 echo "Copiando dotfiles..."
 
@@ -44,13 +44,14 @@ fi
 chown -R "$SUDO_USER:$SUDO_USER" "$USER_CONFIG" "$USER_BIN"
 
 # ==============================
-# INSTALAR PACOTES
+# PACOTES OFICIAIS
 # ==============================
-PACKAGES=(
+PACMAN_PACKAGES=(
     base-devel
     git
     curl
     swaync
+    waybar
     cava
     zsh
     hyprlock
@@ -65,11 +66,11 @@ PACKAGES=(
     bash-language-server
     rust-analyzer
     clang
+    catppuccin-gtk-theme-mocha
     gopls
     fastfetch
     nwg-look
     rofi
-    zed
     ttf-jetbrains-mono
     ttf-jetbrains-mono-nerd
     wf-recorder
@@ -80,11 +81,55 @@ PACKAGES=(
     mpv
     imagemagick
 )
+# ==============================
+# DEFINIR ZSH COMO SHELL PADRÃO
+# ==============================
+echo "Configurando ZSH como shell padrão..."
 
+ZSH_PATH=$(command -v zsh)
+
+if ! grep -q "$ZSH_PATH" /etc/shells; then
+    echo "$ZSH_PATH" >> /etc/shells
+fi
+
+chsh -s "$ZSH_PATH" "$SUDO_USER"
+
+echo "ZSH definido como shell padrão para $SUDO_USER"
+
+# ==============================
+# PACOTES AUR
+# ==============================
+AUR_PACKAGES=(
+    zed-bin
+    waypaper
+)
+
+# ==============================
+# ATUALIZA SISTEMA
+# ==============================
 echo "Atualizando sistema..."
 pacman -Syu --noconfirm
 
-echo "Instalando pacotes..."
-pacman -S --needed --noconfirm "${PACKAGES[@]}"
+echo "Instalando pacotes oficiais..."
+pacman -S --needed --noconfirm "${PACMAN_PACKAGES[@]}"
 
-echo "✅ Dotfiles aplicados e pacotes instalados com sucesso!"
+# ==============================
+# INSTALAR YAY
+# ==============================
+if ! command -v yay &>/dev/null; then
+    echo "Instalando yay (AUR helper)..."
+    sudo -u "$SUDO_USER" bash <<EOF
+cd /tmp
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+EOF
+fi
+
+# ==============================
+# INSTALAR PACOTES AUR
+# ==============================
+echo "Instalando pacotes AUR..."
+sudo -u "$SUDO_USER" yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+
+echo "✅ Dotfiles aplicados e pacotes (pacman + AUR) instalados com sucesso!"

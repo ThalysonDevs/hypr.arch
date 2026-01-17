@@ -1,0 +1,16 @@
+#!/bin/bash
+
+WALL="$1"
+
+# Muda wallpaper
+swww img "$WALL" --transition-type any --transition-fps 60 --transition-duration 1
+
+# Gera cores
+wal -i "$WALL" -n
+
+# Aguarda wal terminar de escrever os arquivos
+sleep 0.5
+
+# Reinicia waybar
+pkill waybar
+waybar &

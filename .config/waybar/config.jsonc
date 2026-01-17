@@ -1,0 +1,42 @@
+{
+  "layer": "bottom",
+  "position": "bottom",
+  "height": 40,
+  "margin-btottom": 0,
+  "margin-bottom": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "spacing": 15,
+  "reload_style_on_change": true,
+  "fixed-center": true,
+
+    // Load Modules
+    "include": [
+      "~/.config/waybar/modules.json"
+    ],
+
+    // Order of the modules
+    "modules-left": [
+      "custom/menu",
+      "hyprland/workspaces",
+      "tray",
+      "wlr/taskbar"
+    ],
+
+    "modules-center": [
+      "clock",
+    ],
+
+    "modules-right": [
+      "memory",
+      "cpu",
+      "wireplumber",
+      "backlight",
+      /*"battery",
+      "bluetooth",*/
+      "network",
+      "custom/updates",
+      "custom/record",
+      "custom/wlogout"
+    ]
+}

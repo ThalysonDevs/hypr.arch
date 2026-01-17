@@ -1,0 +1,31 @@
+
+  {
+    "label": "lock",
+    "action": "hyprlock",
+    "keybind": "b"
+  }
+  {
+    "label": "logout",
+    "action": "hyprctl dispatch exit 0",
+    "keybind": "l"
+  }
+  {
+    "label": "suspend",
+    "action": "systemctl suspend",
+    "keybind": "s"
+  }
+  {
+    "label": "hibernate",
+    "action": "systemctl hibernate",
+    "keybind": "h"
+  }
+  {
+    "label": "shutdown",
+    "action": "systemctl poweroff",
+    "keybind": "d"
+  }
+  {
+    "label": "reboot",
+    "action": "systemctl reboot",
+    "keybind": "r"
+  }

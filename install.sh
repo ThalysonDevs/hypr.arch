@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-### VERIFICAÇÕES ###
+# ==============================
+# VERIFICAÇÕES
+# ==============================
 if [[ $EUID -ne 0 ]]; then
     echo "Execute com sudo:"
     echo "  sudo $0"
@@ -15,29 +17,35 @@ fi
 
 USER_HOME=$(eval echo "~$SUDO_USER")
 USER_CONFIG="$USER_HOME/.config"
+USER_BIN="$USER_HOME/.local/bin"
 
 echo "Usuário alvo: $SUDO_USER"
 echo "Home: $USER_HOME"
 
----
+# ==============================
+# COPIAR CONFIGURAÇÕES
+# ==============================
+echo "Copiando dotfiles..."
 
-### 1️⃣ COPIAR CONFIGURAÇÕES ###
-echo "Copiando dotfiles para ~/.config..."
-
-if [[ ! -d "./config" ]]; then
-    echo "Pasta 'config/' não encontrada na raiz do repositório!"
+if [[ ! -d "./.config" ]]; then
+    echo "Pasta '.config/' não encontrada na raiz do repositório!"
     exit 1
 fi
 
-mkdir -p "$USER_CONFIG"
+mkdir -p "$USER_CONFIG" "$USER_BIN"
 
-cp -rT ./config "$USER_CONFIG"
+cp -rT ./.config "$USER_CONFIG"
 
-chown -R "$SUDO_USER:$SUDO_USER" "$USER_CONFIG"
+if [[ -d "./.local/bin" ]]; then
+    cp -rT ./.local/bin "$USER_BIN"
+    chmod +x "$USER_BIN"/*
+fi
 
----
+chown -R "$SUDO_USER:$SUDO_USER" "$USER_CONFIG" "$USER_BIN"
 
-### 2️⃣ INSTALAR PACOTES ###
+# ==============================
+# INSTALAR PACOTES
+# ==============================
 PACKAGES=(
     base-devel
     git
@@ -73,10 +81,10 @@ PACKAGES=(
     imagemagick
 )
 
-echo "Atualizando repositórios..."
-pacman -Sy --noconfirm
+echo "Atualizando sistema..."
+pacman -Syu --noconfirm
 
 echo "Instalando pacotes..."
 pacman -S --needed --noconfirm "${PACKAGES[@]}"
 
-echo "Dotfiles aplicados e pacotes instalados com sucesso!"
+echo "✅ Dotfiles aplicados e pacotes instalados com sucesso!"

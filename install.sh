@@ -9,6 +9,7 @@ INSTALL_YAY=true
 
 AUR_PACKAGES=(
     waypaper
+    wlogout
     google-chrome
     wf-recorder
     catppuccin-gtk-theme-mocha

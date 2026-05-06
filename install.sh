@@ -10,11 +10,35 @@ INSTALL_YAY=true
 AUR_PACKAGES=(
     waypaper
     wlogout
+    wl-clipboard
+    polkit-gnome
+    polkit-kde-agent
+    xdg-desktop-portal-hyprland
     google-chrome
     wf-recorder
     catppuccin-gtk-theme-mocha
     fastfetch
+    google-chrome
+    gnome-disk-utility
+    steam
+    gnome-software
+    heroic-games-launcher-bin
+    flatpak
     swaync
+    qbittorrent
+    dxvk-bin
+    wine
+    protonplus
+    p7zip
+    unzip
+    gthumb
+    gamemode
+    gamescope
+    bibata-cursor-theme-bin
+    ttf-font-icons
+    ttf-material-icons
+    mangohud
+    winetricks
     visual-studio-code-bin
 )
 
@@ -34,7 +58,7 @@ PACMAN_PACKAGES=(
     nautilus
     libnotify
     pavucontrol
-    swww
+    awww
     zed
     rust
     python-lsp-server

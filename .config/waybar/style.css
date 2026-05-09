@@ -1,362 +1,193 @@
-/* Colors */
+/* -----------------------------------------------------
+ * Colors
+ * ----------------------------------------------------- */
 
-@define-color dark-gray #d0d0d0;
-@define-color light-gray #f0f0f0;
-@define-color black #1a1a1a;
-@define-color white rgba(255, 255, 255, 0.9);
-@define-color black-background rgba(0, 0, 0, 0.3);
-@define-color white-background rgba(255, 255, 255, 0.15);
+@define-color bg rgba(20, 20, 20, 0.55);
+@define-color bg-hover rgba(255, 255, 255, 0.08);
+@define-color bg-active rgba(255, 255, 255, 0.18);
+
+@define-color text #f5f5f5;
+@define-color text-dim #cfcfcf;
+
+@define-color accent #ffffff;
 
 /* -----------------------------------------------------
-* General 
-* ----------------------------------------------------- */
+ * Global
+ * ----------------------------------------------------- */
 
 * {
-    font-family:  "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
-    font-size: 10px;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 12px;
     border: none;
-    border-radius: 0px;
+    border-radius: 12px;
+    min-height: 0;
 }
 
 window#waybar {
-    background-color: transparent;
-    opacity: 1;
-    transition-property: transparent;
-    transition-duration: .3s;
-    margin: 0px;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.3) 0%,
-        rgba(0, 0, 0, 0.15) 60%,
-        rgba(0, 0, 0, 0) 100%
-    );
+    background: transparent;
+    color: @text;
 }
 
-window#waybar>box {
-    margin: 0px 20px 4px 20px;
+window#waybar > box {
+    margin: 8px 12px 0px 12px;
 }
 
 /* -----------------------------------------------------
-* Tooltips
-* ----------------------------------------------------- */
+ * Shared module style
+ * ----------------------------------------------------- */
 
-tooltip {
-    opacity: 0.9;
-    background-color: transparent;
-    padding: 0px;
-    margin: 0px;
+#clock,
+#memory,
+#cpu,
+#network,
+#wireplumber,
+#backlight,
+#tray,
+#custom-menu,
+#custom-updates,
+#custom-record,
+#custom-wlogout,
+#workspaces,
+#taskbar {
+    background: @bg;
+    padding: 0 12px;
+    margin: 0 4px;
+    color: @text;
+    transition: all 0.2s ease;
 }
 
-tooltip label {
-    font-size: 15px;
-    font-style: normal;
-    font-weight: bold;
-    padding: 0px;
-    margin: 5px;
-    color: @white;
-}
-
-tooltip>box {
-    margin: 0px;
-    border-radius: 20px;
-    background-color: @black-background;
+#clock:hover,
+#memory:hover,
+#cpu:hover,
+#network:hover,
+#wireplumber:hover,
+#backlight:hover,
+#tray:hover,
+#custom-menu:hover,
+#custom-updates:hover,
+#custom-record:hover,
+#custom-wlogout:hover {
+    background: @bg-hover;
 }
 
 /* -----------------------------------------------------
-* Workspaces 
-* ----------------------------------------------------- */
+ * Workspaces
+ * ----------------------------------------------------- */
 
 #workspaces {
-    opacity: 1;
-    padding: 0px 3px;
-    margin: 4px 0px 4px 0px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white-background;
+    padding: 0 6px;
 }
 
 #workspaces button {
-    opacity: 1;
-    margin: 3px 0px;
-    padding: 0px 6px;
-    min-height: 0px;
-    min-width: 0px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: transparent;
-}
+    color: transparent;
+    background: rgba(255, 255, 255, 0.12);
 
-#workspaces button>box {
-    margin: 6px 0px;
-    padding: 0px 5px;
-    border-radius: 10px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white;
+    margin: 6px 4px;
+    padding: 0;
+
+    min-width: 10px;
+    min-height: 10px;
+
+    transition: all 0.2s ease;
 }
 
 #workspaces button.active {
-    background-color: transparent;
-}
-
-#workspaces button.active>box {
-    margin: 6px 0px;
-    padding: 0px 15px;
-    border-radius: 10px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white;
-}
-
-#workspaces button.special {
-    margin: 2px 0px;
-    padding: 0px 3px;
-    border-radius: 20px;
-    min-height: 0px;
-    min-width: 0px;
-    font-size: 0px;
-    background-color: transparent;
-}
-
-#workspaces button.special>box {
-    margin: 3px 0px;
-    padding: 0px 9px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white;
-}
-
-#workspaces button.special.active {
-    margin: 2px 0px;
-    padding: 0px 5px;
-    background-color: @white;
-}
-
-#workspaces button.special.active>box {
-    margin: 5px 0px;
-    padding: 0px 7px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white;
+    background: @accent;
+    min-width: 28px;
 }
 
 #workspaces button:hover {
-    transition: background-color 0.1s ease-in;
-    background-color: @white-background;
+    background: rgba(255, 255, 255, 0.35);
 }
-
-/* -----------------------------------------------------
-* Tray
-* ----------------------------------------------------- */
-
-#tray {
-    opacity: 1;
-    padding: 3px 5px;
-    margin: 4px 0px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white-background;
-}
-
-#tray>* {
-    opacity: 1;
-    /* padding: 5px 7px; */ /* These don't work no matter what I do */
-    /* margin: 4px 0px; */
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: transparent;
-}
-
-#tray>*:hover {
-    background-color: @white-background;
-}
-
-#tray menu {
-    border-radius: 20px;
-    padding: 4px 0px;
-    color: #f0f0f0;
-    font-size: 13px;
-    box-shadow: none; /* The shadow is still there */
-    background: @white-background;
-}
-
-#tray menu menuitem {
-    padding: 4px 10px;
-    margin: 4px 10px;
-    border-radius: 20px;
-    transition: background 0.15s ease, color 0.15s ease;
-    font-size: 13px; /* Can't change font size */
-}
-
-#tray menu menuitem:hover { /* works */
-    background: @white;
-    color: @black;
-}
-
-#tray menu separator { /* works */
-    margin: 0px 0px;
-    border-bottom: 3px solid @white;
-}
-
 
 /* -----------------------------------------------------
  * Taskbar
  * ----------------------------------------------------- */
 
 #taskbar {
-    opacity: 1;
-    padding: 0px 2px;
-    margin: 4px 0px 4px 0px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: @white-background;
+    padding: 0 6px;
 }
 
 #taskbar button {
-    opacity: 1;
-    margin: 2px 0px;
-    padding: 0px 2px;
-    min-height: 0px;
-    min-width: 0px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: transparent;
-}
-
-#taskbar button>box {
-    margin: 2px 0px;
-    padding: 0px 2px;
-    border-radius: 20px;
-    transition: background-color 0.1s ease-in;
-    background-color: transparent;
-}
-
-#taskbar button:hover {
-    background-color: @white-background;
-}
-
-#taskbar button.active>box {
-    background-color: @white;
-}
-
-#taskbar.empty {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    min-height: 0px;
-    min-width: 0px;
+    padding: 0 8px;
+    margin: 4px;
     background: transparent;
 }
 
+#taskbar button.active {
+    background: @bg-active;
+}
+
+#taskbar button:hover {
+    background: @bg-hover;
+}
+
 /* -----------------------------------------------------
-* Modules
-* ----------------------------------------------------- */
+ * Tray
+ * ----------------------------------------------------- */
 
-#custom-menu,
-#clock,
-#custom-record,
-#memory,
-#cpu,
-#wireplumber,
-#backlight,
-/*#battery,
-#bluetooth,*/
-#network,
-#custom-updates,
-#custom-wlogout {
-    opacity: 1;
-    border-radius: 7px;
-    margin: 4px 0px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 20px;
-    transition: all 0.1s ease-in;
-    background-color: transparent;
-    color: @white;
+#tray {
+    padding: 0 10px;
 }
 
-#custom-menu:hover,
-#clock:hover,
-#custom-record:hover,
-#memory:hover,
-#cpu:hover,
-#wireplumber:hover,
-#backlight:hover,
-/*#battery:hover,
-#bluetooth:hover,*/
-#network:hover,
-#custom-updates:hover,
-#custom-wlogout:hover {
-    background-color: @white-background;
+#tray > * {
+    margin: 0 4px;
 }
 
-#custom-menu {
-    padding: 0px 11px 0px 6px;
-    font-size: 19px;
-}
-
+/* -----------------------------------------------------
+ * Clock
+ * ----------------------------------------------------- */
 
 #clock {
-    padding: 2px 2px 0px 2px;
+    font-weight: 600;
+    padding: 0 16px;
 }
 
+/* -----------------------------------------------------
+ * Audio / Network / System
+ * ----------------------------------------------------- */
 
-#custom-record {
-    padding: 1px 10px;
-    font-size: 16px;
-    color: #ff5555;
-}
-
-#custom-record:hover {
-    background-color: rgba(255,255,255,0.15);
-}
-
-
-#memory {
-    padding: 1px 0px 0px 2px;
-}
-
+#wireplumber,
+#network,
+#backlight,
+#memory,
 #cpu {
-    padding: 1px 0px 0px 2px;
+    min-width: 24px;
 }
 
-#wireplumber {
-    padding: 1px 2px 0px 4px;
-}
+/* -----------------------------------------------------
+ * Buttons
+ * ----------------------------------------------------- */
 
-#backlight {
-    padding: 1px 2px 0px 0px;
-}
-
-@keyframes blink {
-    to {
-        background-color: transparent;
-    }
-}
-/*#battery {
-    padding: 1px 1px 0px 1px;
-    animation-name: none;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-#battery.critical:not(.charging) {
-    animation-name: blink;
-    background-color: #ea0000;
-}
-
-#bluetooth {
-    padding: 1px 0px 0px 1px;
-}
-*/
-#network {
-    padding: 1px 8px 0px 3px;
+#custom-menu {
+    font-size: 18px;
+    padding-left: 14px;
+    padding-right: 16px;
 }
 
 #custom-updates {
-    padding: 1px 11px 0px 10px;
-    font-size: 17px;
+    color: #a6e3a1;
+}
+
+#custom-record {
+    color: #f38ba8;
 }
 
 #custom-wlogout {
-    padding: 1px 11px 0px 6px;
-    font-size: 18px;
+    color: #f9e2af;
+    padding-right: 14px;
+}
+
+/* -----------------------------------------------------
+ * Tooltip
+ * ----------------------------------------------------- */
+
+tooltip {
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 14px;
+}
+
+tooltip label {
+    color: white;
+    padding: 6px;
 }

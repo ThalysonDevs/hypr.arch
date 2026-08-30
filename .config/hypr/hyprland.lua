@@ -33,7 +33,7 @@ hl.workspace_rule({ workspace = "3", monitor = "DP-1" })
 
 local terminal    = "kitty"
 local fileManager = "nautilus"
-local menu        = "rofi -show drun"
+--local menu        = "rofi -show drun"
 
 
 -------------------
@@ -42,7 +42,7 @@ local menu        = "rofi -show drun"
 
 hl.on("hyprland.start", function ()
     hl.exec_cmd("waypaper --restore")
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("quickshell")
     hl.exec_cmd("xhost +SI:localuser:root")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP")
@@ -202,13 +202,13 @@ hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + I", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("touch /tmp/quickshell_toggle_launcher"))
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind("SUPER + H", hl.dsp.exec_cmd("hyprlock"))
 hl.bind("SUPER + T", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("google-chrome-stable"))
-hl.bind("SUPER + R", hl.dsp.exec_cmd("pkill waybar && waybar"))
+hl.bind("SUPER + R", hl.dsp.exec_cmd("pkill quickshell; quickshell &"))
 hl.bind("Print", hl.dsp.exec_cmd("grim -g \"$(slurp)\""))
 
 -- Mover foco
@@ -280,3 +280,26 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+---------------------------------
+---- QUICKSHELL GLASS RULES -----
+---------------------------------
+
+hl.layer_rule({
+    match = { namespace = "quickshell-topbar" },
+    blur = true,
+    ignore_alpha = 0.2,
+})
+
+hl.layer_rule({
+    match = { namespace = "quickshell-control-center" },
+    blur = true,
+    ignore_alpha = 0.2,
+})
+
+hl.layer_rule({
+    match = { namespace = "quickshell-app-launcher" },
+    blur = true,
+    ignore_alpha = 0.2,
+})
+

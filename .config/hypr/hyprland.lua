@@ -281,25 +281,3 @@ hl.window_rule({
     float = true,
 })
 
----------------------------------
----- QUICKSHELL GLASS RULES -----
----------------------------------
-
-hl.layer_rule({
-    match = { namespace = "quickshell-topbar" },
-    blur = true,
-    ignore_alpha = 0.2,
-})
-
-hl.layer_rule({
-    match = { namespace = "quickshell-control-center" },
-    blur = true,
-    ignore_alpha = 0.2,
-})
-
-hl.layer_rule({
-    match = { namespace = "quickshell-app-launcher" },
-    blur = true,
-    ignore_alpha = 0.2,
-})
-
